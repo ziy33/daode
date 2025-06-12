@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Edule - 在线学习网站模板</title>
+    <meta content="noindex, follow" name="robots"/>
+    <meta content="" name="description">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <!-- Favicon -->
+    <link href="assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <!-- CSS -->
+</head>
+<style>
+    mark {
+        background-color: red;
+        color: white;
+        padding: 0 2px;
+    }
+
+    .responsive-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        border: 1px solid #e5f4eb;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        table-layout: fixed; /* ✅ 添加这一行 */
+    }
+
+    .responsive-table td[data-label="内容"] {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .responsive-table th,
+    .responsive-table td {
+        border: 1px solid #e5f4eb;
+        padding: 12px 16px;
+        text-align: left;
+    }
+
+    .responsive-table th {
+        background-color: #e5f4eb;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    @media (max-width: 600px) {
+        .responsive-table thead {
+            display: none;
+        }
+
+        .responsive-table tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid #e5f4eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .responsive-table td {
+            display: block;
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            table-layout: fixed; /* 关键：强制表格固定布局 */
+            width: 100%;
+            max-width: 10px; /* 控制最大宽度 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; /* 防止换行 */
+        }
+
+        .responsive-table td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 16px;
+            width: 45%;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            min-height: 300px;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap; /* 保留换行 */
+            background-color: #f9f9f9;
+        }
+    }
+
+
+</style>
+<body>
+<div class="main-wrapper main-wrapper-02">
+
+    <!-- 管理面板开始 -->
+    <div class="section overflow-hidden position-relative" id="wrapper">
+
+        <div class="page-content-wrapper py-0">
+
+            <div class="main-content-wrapper pb-0">
+                <div class="container-fluid">
+                    <!-- 问答区域开始 -->
+                    <div class="question-answer">
+                        <div class="row">
+                            <div class="col-xl-8">
+                                <table class="responsive-table" id="my-table">
+                                    <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>时间</th>
+                                        <th>类别</th>
+                                        <th>内容</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="responsive-table" id="table-body">
+                                    <!-- jQuery will render rows here -->
+                                    </tbody>
+                                </table>
+                                <!-- 回答消息区域开始 -->
+                                <div class="answer-message-wrapper">
+                                    <input class="loadmore" id="类别" placeholder="请输入分类" type="text">
+                                    <form action="#">
+                                        <div class="message-form">
+                                            <div class="auhtor">
+                                            </div>
+                                            <div class="message-input">
+                                                <textarea id="note" placeholder="笔记内容"></textarea>
+
+                                                <script>
+                                                    document.getElementById("note").value =
+                                                        ``;
+                                                </script>
+                                                <div class="message-btn">
+                                                    <button class="btn btn-secondary btn-hover-primary">取消</button>
+                                                    <button class="btn btn-primary btn-hover-dark">添加</button>
+                                                    <button class="btn btn-primary btn-hover-dark">AI润色</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <!-- 回答消息区域结束 -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 问答区域结束 -->
+
+                </div>
+            </div>
+            <!-- 页面内容结束 -->
+
+        </div>
+    </div>
+    <!-- 管理面板结束 -->
+</div>
+
+<!-- jQuery（必须先加载） -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables 样式 + 脚本 -->
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- mark.js 和 datatables.mark 插件 -->
+<script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.mark.js@2.0.0/dist/datatables.mark.min.js"></script>
+
+<script>
+
+
+    const data = [
+        {
+            id: "1",
+            time: "2025-06-13",
+            category: "第一章",
+            content: `道可道，非常道；名可名，非常名。
+	无名，天地之始；有名，万物之母。
+	故常无欲，以观其妙；常有欲，以观其徼。
+	此两者同出而异名，同谓之玄。
+	玄之又玄，众妙之门。
+
+	翻译：
+	“道”，如果可以被清楚地说出来，那就不是永恒不变的“真道”；
+	“名”，如果可以准确地命名，那也不是万物真正的“本名”。
+
+	“无名”，是天地万物产生之前的本原状态；
+	“有名”，是万物生成之后所赋予的具体形态。
+
+	因此，当人没有私欲时，可以看到“道”的本质与奥妙；
+	有了欲望，就只能看到事物表面的现象和边界。
+
+	这两种状态（无与有）是同一个本源产生的，只是表达方式不同，统称为“玄”。
+
+	而“玄之又玄”，是所有奥妙的根源和通往真理的大门。`
+        },
+        {
+            id: "2",
+            time: "2025-06-14",
+            category: "第二章",
+            content: "与客户视频会议"
+        },
+        {
+            id: "3",
+            time: "2025-06-15",
+            category: "第三章",
+            content: "更新版本文档"
+        }
+    ];
+    $(document).ready(function () {
+        const $tbody = $("#table-body");
+        data.forEach(row => {
+            const tr = `
+  <tr onclick="qwe(this)">
+    <td data-label="id">${row.id}</td>
+    <td data-label="时间">${row.time}</td>
+    <td data-label="类别">${row.category}</td>
+    <td data-label="内容" title="${row.content.replace(/"/g, '&quot;')}">${row.content}</td>
+  </tr>
+`;
+            $tbody.append(tr);
+        });
+
+        // ✅ 初始化 DataTables + mark.js 插件
+        const table = $('#my-table').DataTable({
+            mark: true,
+            language: {
+                searchPlaceholder: "请输入关键词搜索",
+                search: ""
+            }
+        });
+
+        // ✅ 搜索框绑定事件
+        $('#search').on('keyup', function () {
+            table.search(this.value).draw();
+        });
+    });
+
+    function qwe(rowElement) {
+        const $row = $(rowElement);
+
+        const time = $row.find("td[data-label='时间']").text().trim();
+        const category = $row.find("td[data-label='类别']").text().trim();
+        const content = $row.find("td[data-label='内容']").text().trim();
+
+        console.log("时间：", time);
+        console.log("类别：", category);
+        console.log("内容：", content);
+        $('#类别').val(category)
+        $('#note').val(content)
+        // 如果你要把这些值传到别的函数或表单，也可以在这里继续处理
+    }
+
+</script>
+</body>
+
+</html>
