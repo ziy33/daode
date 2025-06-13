@@ -11,6 +11,12 @@
     <!-- Favicon -->
     <link href="assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="assets/css/style.css" rel="stylesheet">
+    <!-- DataTables 响应式插件样式 -->
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet" />
+
+    <!-- DataTables 响应式插件脚本 -->
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
     <!-- CSS -->
 </head>
 <style>
@@ -49,57 +55,6 @@
         text-align: center;
     }
 
-    @media (max-width: 600px) {
-        .responsive-table thead {
-            display: none;
-        }
-
-        .responsive-table tr {
-            display: block;
-            margin-bottom: 15px;
-            border: 1px solid #e5f4eb;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .responsive-table td {
-            display: block;
-            text-align: right;
-            padding-left: 50%;
-            position: relative;
-            table-layout: fixed; /* 关键：强制表格固定布局 */
-            width: 100%;
-            max-width: 10px; /* 控制最大宽度 */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap; /* 防止换行 */
-        }
-
-        .responsive-table td::before {
-            content: attr(data-label);
-            position: absolute;
-            left: 16px;
-            width: 45%;
-            white-space: nowrap;
-            text-align: left;
-            font-weight: bold;
-            color: #333;
-        }
-
-        textarea {
-            width: 100%;
-            max-width: 600px;
-            height: auto;
-            min-height: 300px;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            white-space: pre-wrap; /* 保留换行 */
-            background-color: #f9f9f9;
-        }
-    }
-
-
 </style>
 <body>
 <div class="main-wrapper main-wrapper-02">
@@ -130,14 +85,37 @@
                                 </table>
                                 <!-- 回答消息区域开始 -->
                                 <div class="answer-message-wrapper">
-                                    <input class="loadmore" id="类别" placeholder="请输入分类" type="text">
+                                    <input class="loadmore" id="类别" placeholder="" type="text">
                                     <form action="#">
                                         <div class="message-form">
                                             <div class="auhtor">
                                             </div>
                                             <div class="message-input">
                                                 <textarea id="note" placeholder="笔记内容"></textarea>
-
+                                                <!-- 遮罩和加载提示 -->
+                                                <div id="overlay" style="
+                                                display: none;
+                                                position: fixed;
+                                                top: 0; left: 0;
+                                                width: 100%; height: 100%;
+                                                background: rgba(0,0,0,0.5);
+                                                z-index: 9999;
+                                            ">
+                                            <div id="loading" style="
+                                                    position: absolute;
+                                                    top: 50%;
+                                                    left: 50%;
+                                                    transform: translate(-50%, -50%);
+                                                    font-size: 24px;
+                                                    color: white;
+                                                    background: rgba(0, 0, 0, 0.7);
+                                                    padding: 20px 30px;
+                                                    border-radius: 10px;
+                                                    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                                                ">
+                                                        🔄 正在润色中，请稍候...
+                                                    </div>
+                                                </div>
                                                 <script>
                                                     document.getElementById("note").value =
                                                         ``;
@@ -145,7 +123,7 @@
                                                 <div class="message-btn">
                                                     <button class="btn btn-secondary btn-hover-primary">取消</button>
                                                     <button class="btn btn-primary btn-hover-dark">添加</button>
-                                                    <button class="btn btn-primary btn-hover-dark">AI润色</button>
+                                                    <button class="btn btn-primary btn-hover-dark" id="polishBtn">AI润色</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -263,6 +241,48 @@
         // 如果你要把这些值传到别的函数或表单，也可以在这里继续处理
     }
 
+</script>
+<script>
+    $('#polishBtn').click(function () {
+        const noteContent = $('#note').val();
+
+        // 显示遮罩
+        $('#overlay').fadeIn(200);
+
+        const data = {
+            model: 'deepseek-v3',
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一个擅长润色的中文写作助手。请帮我润色以下内容，并用 1. 2. 3. 4. 的格式列出修改后的内容：'
+                },
+                {
+                    role: 'user',
+                    content: noteContent
+                }
+            ]
+        };
+
+        $.ajax({
+            url: 'https://hk.xty.app/v1/chat/completions',
+            method: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer sk-6D8Yq8viSJVe8HVz1zjd85E6iK1vqnOpJzaanrz1MxEo9mrZ' // 如果接口不需要授权，可以去掉这一行
+            },
+            data: JSON.stringify(data),
+            success: function (response) {
+                const reply = response.choices?.[0]?.message?.content || '未返回润色结果';
+                $('#note').val(reply);
+            },
+            error: function (xhr) {
+                alert('请求失败: ' + xhr.status + ' ' + xhr.statusText);
+            },
+            complete: function () {
+                $('#overlay').fadeOut(200);
+            }
+        });
+    });
 </script>
 </body>
 
