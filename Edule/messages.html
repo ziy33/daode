@@ -16,10 +16,23 @@
 
     <!-- DataTables 响应式插件脚本 -->
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- CSS -->
 </head>
 <style>
+    .delete-btn {
+        display: inline-block;
+        padding: 4px 8px;
+        background-color: #fdd;      /* 淡红色背景 */
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        user-select: none;           /* 避免选中文字 */
+    }
+    .delete-btn:hover {
+        background-color: #f99;
+    }
     mark {
         background-color: red;
         color: white;
@@ -77,6 +90,7 @@
                                         <th>时间</th>
                                         <th>类别</th>
                                         <th>内容</th>
+                                        <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tbody class="responsive-table" id="table-body">
@@ -121,8 +135,8 @@
                                                         ``;
                                                 </script>
                                                 <div class="message-btn">
-                                                    <button class="btn btn-secondary btn-hover-primary">取消</button>
-                                                    <button class="btn btn-primary btn-hover-dark">添加</button>
+                                                    <button class="btn btn-secondary btn-hover-primary" id="取消">清空</button>
+                                                    <button class="btn btn-primary btn-hover-dark" id="添加">添加</button>
                                                     <button class="btn btn-primary btn-hover-dark" id="polishBtn">AI润色</button>
                                                 </div>
                                             </div>
@@ -157,75 +171,108 @@
 <script src="https://cdn.jsdelivr.net/npm/datatables.mark.js@2.0.0/dist/datatables.mark.min.js"></script>
 
 <script>
+    // 工具函数：获取当前日期时间字符串
+    function getCurrentDatetime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minute = String(now.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
 
-
-    const data = [
-        {
-            id: "1",
-            time: "2025-06-13",
-            category: "第一章",
-            content: `道可道，非常道；名可名，非常名。
-	无名，天地之始；有名，万物之母。
-	故常无欲，以观其妙；常有欲，以观其徼。
-	此两者同出而异名，同谓之玄。
-	玄之又玄，众妙之门。
-
-	翻译：
-	“道”，如果可以被清楚地说出来，那就不是永恒不变的“真道”；
-	“名”，如果可以准确地命名，那也不是万物真正的“本名”。
-
-	“无名”，是天地万物产生之前的本原状态；
-	“有名”，是万物生成之后所赋予的具体形态。
-
-	因此，当人没有私欲时，可以看到“道”的本质与奥妙；
-	有了欲望，就只能看到事物表面的现象和边界。
-
-	这两种状态（无与有）是同一个本源产生的，只是表达方式不同，统称为“玄”。
-
-	而“玄之又玄”，是所有奥妙的根源和通往真理的大门。`
-        },
-        {
-            id: "2",
-            time: "2025-06-14",
-            category: "第二章",
-            content: "与客户视频会议"
-        },
-        {
-            id: "3",
-            time: "2025-06-15",
-            category: "第三章",
-            content: "更新版本文档"
-        }
-    ];
-    $(document).ready(function () {
-        const $tbody = $("#table-body");
-        data.forEach(row => {
-            const tr = `
-  <tr onclick="qwe(this)">
-    <td data-label="id">${row.id}</td>
-    <td data-label="时间">${row.time}</td>
-    <td data-label="类别">${row.category}</td>
-    <td data-label="内容" title="${row.content.replace(/"/g, '&quot;')}">${row.content}</td>
-  </tr>
-`;
-            $tbody.append(tr);
-        });
-
-        // ✅ 初始化 DataTables + mark.js 插件
-        const table = $('#my-table').DataTable({
-            mark: true,
-            language: {
-                searchPlaceholder: "请输入关键词搜索",
-                search: ""
-            }
-        });
-
-        // ✅ 搜索框绑定事件
-        $('#search').on('keyup', function () {
-            table.search(this.value).draw();
-        });
+    // 取消按钮
+    document.getElementById("取消").addEventListener("click", function () {
+        document.getElementById("note").value = "";
+        document.getElementById("类别").value = "";
     });
 
+    // 添加按钮
+    document.getElementById("添加").addEventListener("click", function () {
+        const note = document.getElementById("note").value.trim();
+        const category = document.getElementById("类别").value.trim();
+
+        if (note === "" || category === "") {
+            return alert("类别和笔记内容都不能为空");
+        }
+
+        const datetime = getCurrentDatetime();
+
+        const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+
+        notes.push({ category, content: note, time: datetime });
+
+        localStorage.setItem("notes", JSON.stringify(notes));
+
+        document.getElementById("note").value = "";
+        document.getElementById("类别").value = "";
+        showNotes()
+    });
+
+    // 显示已保存的内容
+    function showNotes() {
+        const $tbody = $("#table-body");
+        $tbody.empty(); // ✅ 清空旧内容，避免重复
+        const data = JSON.parse(localStorage.getItem("notes") || "[]");
+            let i = 0;
+            data.forEach(row => {
+                i++
+                const tr = `
+              <tr onclick="qwe(this)">
+                <td data-label="id">${i}</td>
+                <td data-label="时间">${row.time}</td>
+                <td data-label="类别">${row.category}</td>
+                <td data-label="内容" title="${row.content.replace(/"/g, '&quot;')}">${row.content}</td>
+               <td data-label="操作">
+                <span class="delete-btn"
+                      data-time="${row.time}"
+                      data-id="${i}"
+                      data-category="${row.category}"
+                      data-content="${row.content.replace(/"/g, '&quot;')}">
+                  <i class="fas fa-times"></i>
+                </span>
+                </td>
+              </tr>
+            `;
+                $tbody.append(tr);
+            });
+        // ✅ 删除按钮点击事件
+        $(".delete-btn").off("click").on("click", function (e) {
+            e.stopPropagation(); // 阻止 tr 的点击事件
+
+            const index = $(this).data("id")-1;  // ✅ 正确拿下标
+
+            console.log("要删除的下标：", index);
+
+            if (!confirm("确定要删除这条笔记吗？")) {
+                return;
+            }
+
+            let notes = JSON.parse(localStorage.getItem("notes") || "[]");
+
+            notes.splice(index, 1);  // ✅ 删除对应下标的项
+
+            localStorage.setItem("notes", JSON.stringify(notes));
+            showNotes();
+        });
+
+    }
+    showNotes()
+
+    // ✅ 初始化 DataTables + mark.js 插件
+    const table = $('#my-table').DataTable({
+        mark: true,
+        language: {
+            searchPlaceholder: "请输入关键词搜索",
+            search: ""
+        }
+    });
+
+    // ✅ 搜索框绑定事件
+    $('#search').on('keyup', function () {
+        table.search(this.value).draw();
+    });
     function qwe(rowElement) {
         const $row = $(rowElement);
 
