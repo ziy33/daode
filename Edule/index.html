@@ -171,6 +171,11 @@
 
             }
         }
+        document.querySelectorAll('.mobile-menu-items a').forEach(link => {
+        link.addEventListener('click', function () {
+            document.querySelector('.mobile-menu')?.classList.remove('open');
+        });
+    });
     </script>
     <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
     <!-- <script src="assets/js/plugins.min.js"></script> -->
