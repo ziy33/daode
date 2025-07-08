@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>章节横向表格（JSON 渲染）</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      background: #f9f9f9;
+      z-index: 2;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 1000px;
+      width: max-content;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px 16px;
+      vertical-align: top;
+      text-align: left;
+      min-width: 220px;
+    }
+
+    th {
+      background-color: #f0f0f0;
+      text-align: center;
+      font-weight: bold;
+      z-index: 2;
+    }
+
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      background-color: #f9f9f9;
+      z-index: 3;
+      min-width: 140px;
+    }
+
+    .author {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .original {
+      margin-top: 4px;
+      font-weight: bold;
+      color: #333;
+    }
+
+
+    .translation {
+      margin-top: 4px;
+      color: #666;
+    }
+    th {
+      background-color: #f7f7f7;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    td {
+      background-color: #fff;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f9f9f9;
+    }
+
+  </style>
+</head>
+<body>
+
+<h2>《道德经》</h2>
+
+<div class="table-wrapper">
+  <table id="chapterTable"></table>
+</div>
+
+<script>
+
+  const rawData =
+  {
+    "RECORDS": [
+    {
+      "章节": "1",
+      "作者": "老子",
+      "原文": "道可道，非常道。名可名，非常名。无名天地之始；有名万物之母。故常无欲，以观其妙；常有欲，以观其徼。此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。",
+      "白话": "可以言说的道，并非常道；可以命名的名，并非常名……玄之又玄，是万物奇妙的门户。"
+    },
+    {
+      "章节": "2",
+      "作者": "老子",
+      "原文": "天下皆知美之为美，斯恶已。皆知善之为善，斯不善已……",
+      "白话": "天下人都知道什么是美，于是就有了丑；都知道什么是善，于是就有了恶……"
+    },
+    {
+      "章节": "3",
+      "作者": "老子",
+      "原文": "不尚贤，使民不争……为无为，则无不治。",
+      "白话": "不推崇有才德的人，使百姓不互相争夺……采用无为而治的方式，就没有什么不能治理。"
+    },
+    {
+      "章节": "4",
+      "作者": "老子",
+      "原文": "道冲，而用之或不盈……象帝之先。",
+      "白话": "道是空虚的，但使用它却永不枯竭……像是上天的先祖。"
+    },
+    {
+      "章节": "5",
+      "作者": "老子",
+      "原文": "天地不仁，以万物为刍狗……不如守中。",
+      "白话": "天地无所谓仁爱，把万物当作草芥……言多必失，不如保持中道。"
+    },
+    {
+      "章节": "6",
+      "作者": "老子",
+      "原文": "谷神不死，是谓玄牝……用之不勤。",
+      "白话": "谷神永远不死，被称为玄妙的母性之门……取之不尽。"
+    },
+    {
+      "章节": "7",
+      "作者": "老子",
+      "原文": "天长地久……故能成其私。",
+      "白话": "天地长久存在，是因为它们不为自己而存在……所以才能成就自我。"
+    },
+    {
+      "章节": "8",
+      "作者": "老子",
+      "原文": "上善若水……故无尤。",
+      "白话": "最好的德行就像水……正因为不争，所以没有过失。"
+    },
+    {
+      "章节": "9",
+      "作者": "老子",
+      "原文": "持而盈之，不如其已……天之道。",
+      "白话": "把器物装满不如适可而止……这才是天道。"
+    },
+    {
+      "章节": "10",
+      "作者": "老子",
+      "原文": "载营魄抱一……是谓玄德。",
+      "白话": "保持魂魄合一，能不分离吗？……这就是深奥的德。"
+    },
+    {
+      "章节": "1",
+      "作者": "庄子",
+      "原文": "道可道，非常道。名可名，非常名……",
+      "白话": "无为而无不为，如水之柔，包容万物而不争。"
+    },
+    {
+      "章节": "2",
+      "作者": "庄子",
+      "原文": "天下皆知美之为美，斯恶已……",
+      "白话": "辨善恶如镜，映照自心；返本归真，不执一端。"
+    },
+    {
+      "章节": "3",
+      "作者": "庄子",
+      "原文": "不尚贤，使民不争……",
+      "白话": "去名逐利，可使百姓返朴归真，政无为而化自成。"
+    },
+    {
+      "章节": "4",
+      "作者": "庄子",
+      "原文": "道冲，而用之或不盈……",
+      "白话": "大道似虚无，却能生万物，其用如潜润。"
+    },
+    {
+      "章节": "5",
+      "作者": "庄子",
+      "原文": "天地不仁，以万物为刍狗……",
+      "白话": "天地如大木，静静生息；人言太多，则扰其自然之道。"
+    },
+    {
+      "章节": "6",
+      "作者": "庄子",
+      "原文": "谷神不死，是谓玄牝……",
+      "白话": "玄牝者，无始无终之母，是万物之根，而不言其用。"
+    },
+    {
+      "章节": "7",
+      "作者": "庄子",
+      "原文": "天长地久……",
+      "白话": "天之道，反者道之动；无私则无为，自然成其功。"
+    },
+    {
+      "章节": "8",
+      "作者": "庄子",
+      "原文": "上善若水……",
+      "白话": "水善下而润万物，不争而自成，这即是圣人之德。"
+    },
+    {
+      "章节": "9",
+      "作者": "庄子",
+      "原文": "持而盈之，不如其已……",
+      "白话": "过犹不及，持盈保中，是大道的常道。"
+    },
+    {
+      "章节": "10",
+      "作者": "庄子",
+      "原文": "载营魄抱一……",
+      "白话": "抱一者，不偏于名利，不附众心，是为玄德。"
+    }
+  ]
+  }
+
+  // 整理数据格式为：章节 -> 作者 -> 内容
+  const structured = {};
+  const allAuthors = new Set();
+
+  rawData.RECORDS.forEach(item => {
+    const chapter = `第${item.章节}章`;
+    if (!structured[chapter]) structured[chapter] = {};
+    structured[chapter][item.作者] = {
+      original: item.原文,
+      translation: item.白话
+    };
+    allAuthors.add(item.作者);
+  });
+
+  const chapters = Object.keys(structured);
+  const authors = Array.from(allAuthors);
+
+  const table = document.getElementById("chapterTable");
+
+  // 表头行
+  const headerRow = document.createElement("tr");
+  const thEmpty = document.createElement("th");
+  thEmpty.className = "sticky-col";
+  thEmpty.textContent = "作者/章节";
+  headerRow.appendChild(thEmpty);
+  chapters.forEach(ch => {
+    const th = document.createElement("th");
+    th.textContent = ch;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
+
+  // 作者内容行
+  authors.forEach(author => {
+    const tr = document.createElement("tr");
+    const tdAuthor = document.createElement("td");
+    tdAuthor.className = "sticky-col author";
+    tdAuthor.textContent = author;
+    tr.appendChild(tdAuthor);
+
+    chapters.forEach(ch => {
+      const cell = document.createElement("td");
+      const content = structured[ch]?.[author];
+      if (content) {
+        cell.innerHTML = `
+            <div class="original">${content.original}</div>
+            <div class="translation">${content.translation}</div>
+          `;
+      } else {
+        cell.innerHTML = "<em>无</em>";
+      }
+      tr.appendChild(cell);
+    });
+
+    table.appendChild(tr);
+  });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const totalColumns = $("#chapterTable th").length;
+
+  // AI总结（纯空格子）
+  let data = `<tr><td class="sticky-col author">AI总结</td>`;
+  for (let i = 0; i < totalColumns - 1; i++) {
+    data += `<td></td>`;
+  }
+  data += `</tr>`;
+  $("#chapterTable").append(data);
+
+  // 自我总结（带 textarea）
+  data = `<tr><td class="sticky-col author">自我总结</td>`;
+  for (let i = 0; i < totalColumns - 1; i++) {
+    const inputId = `input-self-${i}`;
+    const saved = localStorage.getItem(inputId) || "";
+    data += `<td>
+    <textarea
+      id="${inputId}"
+      rows="3"
+      style="width: 100%; resize: vertical;" >${saved}</textarea>
+  </td>`;
+  }
+  data += `</tr>`;
+  $("#chapterTable").append(data);
+  // 绑定自动保存功能
+  bindTextareaAutoSave();
+  // 方法：绑定所有 textarea 的本地保存
+  function bindTextareaAutoSave() {
+    $("textarea").on("blur", function () {
+      const key = $(this).attr("id");          // 使用 id 作为存储 key
+      const value = $(this).val();             // 获取当前内容
+      localStorage.setItem(key, value);        // 存入 localStorage
+      // 可选提示：保存成功 ✅
+      // console.log(`已保存 ${key}: ${value}`);
+    });
+  }
+
+</script>
+
+
+
+</body>
+</html>
