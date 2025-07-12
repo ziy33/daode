@@ -71,17 +71,17 @@
                             <form action="#">
                                 <!-- Single Form Start -->
                                 <div class="single-form">
-                                    <input type="email" placeholder="Username or Email">
+                                    <input type="email" placeholder="Username or Email" id="user">
                                 </div>
                                 <!-- Single Form End -->
                                 <!-- Single Form Start -->
                                 <div class="single-form">
-                                    <input type="password" placeholder="Password">
+                                    <input type="password" placeholder="Password" id="pass">
                                 </div>
                                 <!-- Single Form End -->
                                 <!-- Single Form Start -->
                                 <div class="single-form">
-                                    <button class="btn btn-primary btn-hover-dark w-100">Login</button>
+                                    <button class="btn btn-primary btn-hover-dark w-100" onclick="login()">Login</button>
                                     <a class="btn btn-secondary btn-outline w-100" href="#">Login with Google</a>
                                 </div>
                                 <!-- Single Form End -->
@@ -127,6 +127,25 @@
 
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止自动提交
+            // console.log('已阻止自动提交，可执行其他逻辑');
+        });
+        function login() {
+            $.get("https://srjfaw743ud0.xiaomiqiu.com/login",{user:$("#user").val()},function(data){
+                console.log(data);
+                if (data.length == 0) {
+                    alert("没有该用户")
+                }else{
+                    sessionStorage.setItem("user",data[0][0])
+                    sessionStorage.setItem('权限',data[0][1])
+                    window.location.href = "index.html"
+                }
+
+            },'json')
+        }
+    </script>
 
 </body>
 
