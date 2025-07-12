@@ -77,9 +77,9 @@
                                     <input type="password" placeholder="验证码" id="验证码">
                                     <img data-v-8ca1db72="" class="random" src="https://user.api.it120.cc/code?k=0.45841766364422654" style="position: absolute; right: 10px; top: 5px; width: 80px; height: 40px;">
                                 </div>
-                                <div class="single-form" style="position: relative;" id="input_短信验证码">
+                                <div class="single-form" style="position: relative;" >
                                     <input type="password" placeholder="短信验证码" id="短信验证码">
-                                    <button data-v-8ca1db72="" type="button" class="el-button el-button--warning is-round" style="position: absolute; right: 10px; top: 15px;"><!----><!----><span>获取验证码</span></button>
+                                    <button id="input_短信验证码" data-v-8ca1db72="" type="button" class="el-button el-button--warning is-round" style="position: absolute; right: 10px; top: 15px;"><!----><!----><span>获取验证码</span></button>
                                 </div>
                                 <div class="single-form">
                                     <input type="text" placeholder="用户名" id="user">
@@ -160,7 +160,7 @@
             },'json')
         }
         $("#input_短信验证码").click(function () {
-            $.post("https://user.api.it120.cc/register/smscode",{mobile:'18262671785',code:$("验证码").val(),k:'0.9999'},function(data){
+            $.post("https://user.api.it120.cc/register/smscode",{mobile:'15062335519',code:$("#验证码").val(),k:'0.45841766364422654'},function(data){
 
             },'json')
         })
