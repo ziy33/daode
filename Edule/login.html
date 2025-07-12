@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
-
     <!-- CSS
 	============================================ -->
 
@@ -38,6 +37,19 @@
 </head>
 
 <body>
+<div id="customAlert" style="
+    display:none;
+    position:fixed;
+    top:20%;
+    left:50%;
+    transform:translateX(-50%);
+    background:#333;
+    color:#fff;
+    padding:15px 30px;
+    border-radius:5px;
+    z-index:9999;
+    opacity:0.9;
+"></div>
 
 <div class="section section-padding">
     <div class="container">
@@ -70,16 +82,12 @@
                         <div class="form-wrapper">
                             <form id="loginform">
                                 <!-- Single Form Start -->
-                                <div class="single-form">
+                                <div class="single-form" id="手机号_div">
                                     <input type="text" placeholder="手机号" id="手机号">
                                 </div>
                                 <div class="single-form" style="position: relative;" id="input_验证码">
                                     <input type="password" placeholder="验证码" id="验证码">
                                     <img data-v-8ca1db72="" class="random" src="https://user.api.it120.cc/code?k=0.45841766364422654" style="position: absolute; right: 10px; top: 5px; width: 80px; height: 40px;">
-                                </div>
-                                <div class="single-form" style="position: relative;" >
-                                    <input type="password" placeholder="短信验证码" id="短信验证码">
-                                    <button id="input_短信验证码" data-v-8ca1db72="" type="button" class="el-button el-button--warning is-round" style="position: absolute; right: 10px; top: 15px;"><!----><!----><span>获取验证码</span></button>
                                 </div>
                                 <div class="single-form">
                                     <input type="text" placeholder="用户名" id="user">
@@ -89,7 +97,10 @@
                                 <div class="single-form" style="position: relative;">
                                     <input type="password" placeholder="Password" id="pass">
                                 </div>
-                                
+                                <div class="single-form" style="position: relative;" id="input_短信验证码s">
+                                    <input type="password" placeholder="其他资料填写完成再填这个" id="短信验证码">
+                                    <button id="input_短信验证码" data-v-8ca1db72="" type="button" class="el-button el-button--warning is-round" style="position: absolute; right: 10px; top: 15px;"><!----><!----><span>获取验证码</span></button>
+                                </div>
                                 <!-- Single Form End -->
                                 <!-- Single Form Start -->
                                 <div class="single-form">
@@ -111,15 +122,6 @@
 
     </div>
 </div>
-
-
-
-
-
-
-    <!-- JS
-    ============================================ -->
-
     <!-- Modernizer & jQuery JS -->
     <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="assets/js/vendor/jquery-3.5.1.min.js"></script>
@@ -142,29 +144,87 @@
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
     <script>
-        // document.getElementById('myForm').addEventListener('submit', function(e) {
-        //     e.preventDefault(); // 阻止自动提交
-        //     // console.log('已阻止自动提交，可执行其他逻辑');
-        // });
-        function login() {
-            $.get("https://srjfaw743ud0.xiaomiqiu.com/login",{user:$("#user").val()},function(data){
-                console.log(data);
-                if (data.length == 0) {
-                    alert("没有该用户")
-                }else{
-                    sessionStorage.setItem("user",data[0][0])
-                    sessionStorage.setItem('权限',data[0][1])
-                    window.location.href = "../index.html"
-                }
+        function showCustomAlert(message) {
+            var alertDiv = $("#customAlert");
+            alertDiv.text(message);
+            alertDiv.fadeIn(300);    // 淡入
 
-            },'json')
+            setTimeout(function() {
+                alertDiv.fadeOut(500);  // 淡出
+            }, 2000);  // 2秒后消失
+        }
+        $(".random").click(function() {
+            var baseUrl = "https://user.api.it120.cc/code";
+            var randomNum = Math.random();
+            var newSrc = baseUrl + "?k=" + randomNum;
+            $(this).attr("src", newSrc);
+
+            // 把当前 k 存下来
+            window.captchaK = randomNum;
+        });
+        $(".random").click()
+        // 调用示例
+       
+
+        document.getElementById('loginform').addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止自动提交
+            // console.log('已阻止自动提交，可执行其他逻辑');
+        });
+        $("#input_短信验证码s").css("display","none")
+        $("#手机号_div").css("display","none")
+        $("#input_验证码").css("display","none")
+        function login() {
+            var isVisible = 
+                $("#input_短信验证码s").is(":visible") || 
+                $("#手机号_div").is(":visible") || 
+                $("#input_验证码").is(":visible");
+            if (isVisible) {
+                $("#input_短信验证码s").hide();
+                $("#手机号_div").hide();
+                $("#input_验证码").hide();
+            } else {
+                $.get("https://srjfaw743ud0.xiaomiqiu.com/login",{user:$("#user").val(),pass:$("#pass").val()},function(data){
+                    console.log(data);
+                    if (data.length == 0) {
+                        showCustomAlert("没有该用户");
+                    }else{
+                        sessionStorage.setItem("user",data[0][0])
+                        sessionStorage.setItem('权限',data[0][1])
+                        sessionStorage.setItem('次数',data[0][2])
+                        window.location.href = "../index.html"
+                    }
+                },'json')
+            }
+            
         }
         $("#input_短信验证码").click(function () {
-            $.post("https://user.api.it120.cc/register/smscode",{mobile:'15062335519',code:$("#验证码").val(),k:'0.45841766364422654'},function(data){
-
-            },'json')
+            if ($("#手机号").val() !== "" && $("#验证码").val() !== "" && $("#user").val() !== "" && $("#pass").val() !== "") {
+                $.post("https://user.api.it120.cc/register/smscode",{mobile:$("#手机号").val(),code:$("#验证码").val(),k:window.captchaK},function(data){
+                    showCustomAlert(data.msg);
+                    if (data.msg=="success") {
+                        $.get("https://srjfaw743ud0.xiaomiqiu.com/添加权限",{
+                            user:$("#user").val(),
+                            手机号:$("#手机号").val(),
+                            密码:$("#pass").val()
+                        },function(data){
+                            $("#手机号").val("")
+                            $("#验证码").val("")
+                            $("#user").val("")
+                            $("#pass").val("")
+                            showCustomAlert("注册成功");
+                            login()
+                        })
+                    }
+                },'json')
+            } else {
+                showCustomAlert("请填写完整信息！");
+            }
         })
-        function logins() {}
+        function logins() {
+            $("#input_短信验证码s").css("display","block")
+            $("#手机号_div").css("display","block")
+            $("#input_验证码").css("display","block")
+        }
     </script>
 
 </body>
