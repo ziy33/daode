@@ -68,24 +68,38 @@
                         <h3 class="title">Login <span>Now</span></h3>
 
                         <div class="form-wrapper">
-                            <form action="#">
+                            <form id="loginform">
                                 <!-- Single Form Start -->
                                 <div class="single-form">
-                                    <input type="email" placeholder="Username or Email" id="user">
+                                    <input type="text" placeholder="手机号" id="手机号">
+                                </div>
+                                <div class="single-form" style="position: relative;" id="input_验证码">
+                                    <input type="password" placeholder="验证码" id="验证码">
+                                    <img data-v-8ca1db72="" class="random" src="https://user.api.it120.cc/code?k=0.45841766364422654" style="position: absolute; right: 10px; top: 5px; width: 80px; height: 40px;">
+                                </div>
+                                <div class="single-form" style="position: relative;" id="input_短信验证码">
+                                    <input type="password" placeholder="短信验证码" id="短信验证码">
+                                    <button data-v-8ca1db72="" type="button" class="el-button el-button--warning is-round" style="position: absolute; right: 10px; top: 15px;"><!----><!----><span>获取验证码</span></button>
+                                </div>
+                                <div class="single-form">
+                                    <input type="text" placeholder="用户名" id="user">
                                 </div>
                                 <!-- Single Form End -->
                                 <!-- Single Form Start -->
-                                <div class="single-form">
+                                <div class="single-form" style="position: relative;">
                                     <input type="password" placeholder="Password" id="pass">
                                 </div>
+                                
                                 <!-- Single Form End -->
                                 <!-- Single Form Start -->
                                 <div class="single-form">
                                     <button class="btn btn-primary btn-hover-dark w-100" onclick="login()">Login</button>
-                                    <a class="btn btn-secondary btn-outline w-100" href="#">Login with Google</a>
+                                    <button class="btn btn-hover-dark w-100" onclick="logins()">手机号注册</button>
+                                    <!-- <a class="btn btn-secondary btn-outline w-100" href="#">Login with Google</a> -->
                                 </div>
                                 <!-- Single Form End -->
                             </form>
+                            
                         </div>
                     </div>
                     <!-- Register & Login Form End -->
@@ -128,10 +142,10 @@
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
     <script>
-        document.getElementById('myForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 阻止自动提交
-            // console.log('已阻止自动提交，可执行其他逻辑');
-        });
+        // document.getElementById('myForm').addEventListener('submit', function(e) {
+        //     e.preventDefault(); // 阻止自动提交
+        //     // console.log('已阻止自动提交，可执行其他逻辑');
+        // });
         function login() {
             $.get("https://srjfaw743ud0.xiaomiqiu.com/login",{user:$("#user").val()},function(data){
                 console.log(data);
@@ -140,11 +154,17 @@
                 }else{
                     sessionStorage.setItem("user",data[0][0])
                     sessionStorage.setItem('权限',data[0][1])
-                    window.location.href = "index.html"
+                    window.location.href = "../index.html"
                 }
 
             },'json')
         }
+        $("#input_短信验证码").click(function () {
+            $.post("https://user.api.it120.cc/register/smscode",{mobile:'18262671785',code:$("验证码").val(),k:'0.9999'},function(data){
+
+            },'json')
+        })
+        function logins() {}
     </script>
 
 </body>
