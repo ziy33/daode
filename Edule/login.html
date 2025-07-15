@@ -191,11 +191,11 @@
                         sessionStorage.setItem("user",data[0][0])
                         sessionStorage.setItem('权限',data[0][1])
                         sessionStorage.setItem('次数',data[0][2])
+                        sessionStorage.setItem('阅读时长',data[0][6])
                         window.location.href = "../index.html"
                     }
                 },'json')
             }
-            
         }
         $("#input_短信验证码").click(function () {
             if ($("#手机号").val() !== "" && $("#验证码").val() !== "" && $("#user").val() !== "" && $("#pass").val() !== "") {
@@ -207,12 +207,22 @@
                             手机号:$("#手机号").val(),
                             密码:$("#pass").val()
                         },function(data){
-                            $("#手机号").val("")
-                            $("#验证码").val("")
-                            $("#user").val("")
-                            $("#pass").val("")
-                            showCustomAlert("注册成功");
-                            login()
+                            if (data=='200') {
+                                $("#手机号").val("")
+                                $("#验证码").val("")
+                                $("#user").val("")
+                                $("#pass").val("")
+                                showCustomAlert("注册成功");
+                                login()
+                            }else if (data=='400') {
+                                $("#手机号").val("")
+                                $("#验证码").val("")
+                                showCustomAlert("你已注册");
+                            }else if (data=='600') {
+                                $("#user").val("")
+                                $("#验证码").val("")
+                                showCustomAlert("用户名重复");
+                            }
                         })
                     }
                 },'json')
