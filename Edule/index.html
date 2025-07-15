@@ -181,10 +181,8 @@
             }, 2000);  // 2秒后消失
         }
         var 权限=sessionStorage.getItem('权限')
-        var 权限 = $("#权限").val(); // 或者从 localStorage.getItem("权限")
 
         if (!权限) {
-            // 没有权限，跳转到登录页面
             window.location.href = "login.html";
         } else if (权限 === "超级管理员") {
             $("#后台管理").css('display', 'block');
