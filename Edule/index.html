@@ -33,7 +33,19 @@
 </head>
 
 <body style="background-color: #ecf5ff;">
-
+    <div id="customAlert" style="
+    display:none;
+    position:fixed;
+    top:20%;
+    left:50%;
+    transform:translateX(-50%);
+    background:#333;
+    color:#fff;
+    padding:15px 30px;
+    border-radius:5px;
+    z-index:9999;
+    opacity:0.9;
+"></div>
     <div class="main-wrapper">
 
         <!-- Header Section Start -->
@@ -64,7 +76,7 @@
                         <div class="header-sign-in-up d-none d-lg-block">
                             <ul>
                                 <li><a class="sign-in" href="login.html">登出</a></li>
-                                <li><a a href="#" onclick="changeIframeSrc('权限.html')">权限</a></li>
+                                <li><a a href="#" id="后台管理" style="display: none;">后台管理</a></li>
                                 <li><a class="sign-up" href="register.html">个人信息</a></li>
                             </ul>
                         </div>
@@ -159,6 +171,23 @@
     <script src="assets/js/plugins/jquery.nice-select.min.js"></script>
     <script src="assets/js/plugins/ajax-contact.js"></script>
     <script>
+        function showCustomAlert(message) {
+            var alertDiv = $("#customAlert");
+            alertDiv.text(message);
+            alertDiv.fadeIn(300);    // 淡入
+
+            setTimeout(function() {
+                alertDiv.fadeOut(500);  // 淡出
+            }, 2000);  // 2秒后消失
+        }
+        var 权限=sessionStorage.getItem('权限')
+        if (权限=="超级管理员") {
+            $("#后台管理").css('display','block')
+            showCustomAlert("欢迎超级管理员登录")
+        }
+        $("#后台管理").click(function(){
+            // window.location.href = "后台管理.html";
+        })
         function changeIframeSrc(url) {
             // Set the iframe's src to the new URL
             document.getElementById('if').src = url;
@@ -186,6 +215,7 @@
 
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
+    <script src="css/main.js"></script>
 
 </body>
 
