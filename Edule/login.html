@@ -10,6 +10,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <style>
+        .hand {
+      position: absolute;
+      width: 50%;
+      height: 2px;
+      background: white;
+      top: 55%;
+      left: 50%;
+      transform-origin: 0% 50%;
+      transform: rotate(90deg);
+    }
+
+    .hour {
+      height: 4px;
+      background: #fff;
+      width: 30%;
+    }
+
+    .minute {
+      height: 3px;
+      background: #0f0;
+      width: 40%;
+    }
+
+    .second {
+      height: 2px;
+      background: #f00;
+      width: 45%;
+    }
+
+    .center-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    </style>
     <!-- CSS
 	============================================ -->
 
@@ -61,13 +103,17 @@
 
                     <!-- Register & Login Images Start -->
                     <div class="register-login-images">
-                        <div class="shape-1">
-                            <img src="assets/images/shape/shape-26.png" alt="Shape">
-                        </div>
+                        <!-- <div class="shape-1"> -->
+                            <!-- <img src="assets/images/shape/shape-26.png" alt="Shape"> -->
+                        <!-- </div> -->
 
 
                         <div class="images">
-                            <img src="assets/images/register-login.png" alt="Register Login">
+                            <img src="./css/PEGAAI.png" alt="Register Login">
+                            <div class="hand hour" id="hour"></div>
+                            <div class="hand minute" id="minute"></div>
+                            <div class="hand second" id="second"></div>
+                            <div class="center-dot"></div>
                         </div>
                     </div>
                     <!-- Register & Login Images End -->
@@ -144,6 +190,27 @@
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
     <script>
+  function updateClock() {
+      const now = new Date();
+      const second = now.getSeconds();
+      const minute = now.getMinutes();
+      const hour = now.getHours();
+
+      // 24小时制时针：一圈 360° = 24 小时 = 15°/小时
+      const hourDeg = hour * 15 + minute * 0.25;
+      const minuteDeg = minute * 6 + second * 0.1;
+      const secondDeg = second * 6;
+
+      // 修正 0° 在正上方
+      const fix = -90;
+
+      document.getElementById('hour').style.transform = `rotate(${hourDeg - 270}deg)`;
+      document.getElementById('minute').style.transform = `rotate(${minuteDeg + fix}deg)`;
+      document.getElementById('second').style.transform = `rotate(${secondDeg + fix}deg)`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
         function showCustomAlert(message) {
             var alertDiv = $("#customAlert");
             alertDiv.text(message);
