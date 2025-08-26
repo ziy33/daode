@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>贴装机 UPH / C/T 计算器</title>
+  <style>
+    body{font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#f6f8fb; color:#111; padding:28px}
+    .card{background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(18,38,63,0.08);padding:20px;max-width:960px;margin:0 auto}
+    h1{font-size:20px;margin:0 0 12px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .field{flex:1 1 200px;min-width:180px}
+    label{display:block;font-size:12px;color:#556; margin-bottom:6px}
+    input[type="number"], select{width:100%;padding:8px;border:1px solid #e3e7ee;border-radius:8px;font-size:14px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:8px;border-bottom:1px solid #eef2f7;text-align:left}
+    .btn{padding:8px 12px;border-radius:8px;border:0;background:#246BFD;color:#fff;cursor:pointer}
+    .result{background:#f3f7ff;padding:12px;border-radius:10px;margin-top:14px}
+    .note{font-size:13px;color:#666;margin-top:8px}
+    .small{font-size:13px;color:#445}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>贴装机 UPH / C/T 计算器</h1>
+    <div class="row">
+      <div class="field">
+        <label>板长 (mm)</label>
+        <input id="boardLength" type="number" value="250" min="1">
+      </div>
+      <div class="field">
+        <label>板宽 (mm)</label>
+        <input id="boardWidth" type="number" value="200" min="1">
+      </div>
+      <div class="field">
+        <label>每板零件颗数 (置件顆數)</label>
+        <input id="partsPerBoard" type="number" value="100" min="1">
+      </div>
+      <div class="field">
+        <label>连板数 (連板數)</label>
+        <input id="panels" type="number" value="1" min="1">
+      </div>
+    </div>
+
+    <hr style="margin:14px 0">
+
+    <div class="row">
+      <div class="field">
+        <label>机器类型</label>
+        <select id="machineType">
+          <option value="NPM-D1/D2">NPM-D1/D2</option>
+          <option value="NPM-D3">NPM-D3</option>
+          <option value="NPM-D3A">NPM-D3A</option>
+          <option value="NPM-WX">NPM-WX</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>工作头类型</label>
+        <select id="headType">
+          <option value="H16">H16</option>
+          <option value="H12">H12</option>
+          <option value="H08">H08</option>
+          <option value="H04">H04</option>
+          <option value="H03">H03</option>
+          <option value="H02">H02</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>工作头数量</label>
+        <input id="headCount" type="number" value="4" min="1">
+      </div>
+      <div class="field">
+        <label>生产模式</label>
+        <select id="prodMode">
+          <option value="alternating">交替模式</option>
+          <option value="independent">獨立模式</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn" id="calcBtn">计算</button>
+      <button class="btn" id="resetBtn" style="background:#eee;color:#333;margin-left:8px">重置默认</button>
+    </div>
+
+    <div id="output" class="result" style="display:none"></div>
+
+    <div class="note">规则：<br>
+      1) 当板长 > 350 mm 时，机器需二次进板，C/T 自动增加 3.0 秒。<br>
+      2) 当板宽 > 300 mm 时，机器用单轨生产，C/T 增加 4.5 秒。<br>
+      3) 若计算出的 C/T &lt; 24 秒，则统一按 24 秒 计算（即最小 C/T = 24s）。
+    </div>
+  </div>
+
+  <script>
+    function number(v){return Number(v)||0}
+
+    // 各机型 + 工作头 对应的 CPH
+    const CPH_TABLE = {
+      "NPM-D1/D2": {H16:35000, H12:31250, H08:20000, H02:4250},
+      "NPM-D3": {H16:38000, H12:34500, H08:21500, H02:4250},
+      "NPM-D3A": {H16:38000, H08:21500, H02:4250},
+      "NPM-WX": {H16:43000, H08:23000, H04:7100, H03:6300}
+    }
+
+    function getCPH(machine, head){
+      if(CPH_TABLE[machine] && CPH_TABLE[machine][head]){
+        return CPH_TABLE[machine][head]
+      }
+      return 0
+    }
+
+    function calc(){
+      const L = number(document.getElementById('boardLength').value)
+      const W = number(document.getElementById('boardWidth').value)
+      const parts = Math.max(1, number(document.getElementById('partsPerBoard').value))
+      const panels = Math.max(1, number(document.getElementById('panels').value))
+      const machine = document.getElementById('machineType').value
+      const headType = document.getElementById('headType').value
+      const headCount = Math.max(1, number(document.getElementById('headCount').value))
+      const mode = document.getElementById('prodMode').value
+
+      // CPH率
+      const cphRates = {
+        alternating: 0.28,
+        independent: 0.37
+      }
+      const cphRateDisplay = (mode === 'alternating') ? '交替模式 28% (BOT 29%, TOP 27.5%)' : '獨立模式 37% (BOT/Single 43%, TOP 33%)'
+
+      const perHeadCPH = getCPH(machine, headType)
+      const standardCPH = perHeadCPH * headCount
+
+      const cphRate = cphRates[mode]
+
+      // UPH = 标准CPH * CPH率 / 置件顆數
+      const UPH = standardCPH * cphRate / parts
+
+      // C/T = 3600 / UPH * 连板数
+      let CT = (UPH > 0) ? (3600 / UPH) * panels : Infinity
+
+      if (L > 350) CT += 3.0
+      if (W > 300) CT += 4.5
+
+      const originalCT = CT
+      if (CT < 24) CT = 24
+
+      const finalUPH = (CT > 0) ? (3600 / CT) : 0
+
+      const out = document.getElementById('output')
+      out.style.display = 'block'
+      out.innerHTML = `
+        <strong>输入综述</strong>
+        <div class="small">板长: ${L} mm，板宽: ${W} mm，零件/板: ${parts}，连板数: ${panels}</div>
+        <div class="small">机器: ${machine}，工作头: ${headType} × ${headCount}</div>
+        <div class="small">生产模式: ${mode === 'alternating' ? '交替模式' : '獨立模式'} — ${cphRateDisplay}</div>
+        <hr>
+        <strong>计算结果</strong>
+        <table>
+          <tr><td>每头 CPH (所选)</td><td>${perHeadCPH.toLocaleString()}</td></tr>
+          <tr><td>标准 CPH (每头CPH × 头数)</td><td>${standardCPH.toLocaleString()}</td></tr>
+          <tr><td>使用的 CPH率</td><td>${(cphRate*100).toFixed(2)}%</td></tr>
+          <tr><td>按公式计算的 UPH（标准）</td><td>${(standardCPH * cphRate / parts).toFixed(4)}</td></tr>
+          <tr><td>按公式计算的 C/T（秒）(未最小化)</td><td>${originalCT === Infinity ? '∞' : originalCT.toFixed(3)}</td></tr>
+          <tr><td>应用板长/板宽 规则后最终 C/T (若低于24秒则按24s)</td><td>${CT === Infinity ? '∞' : CT.toFixed(3)} s</td></tr>
+          <tr><td>最终 UPH（由最终 C/T 反算）</td><td>${finalUPH.toFixed(4)} (件/小时)</td></tr>
+        </table>
+      `
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calc)
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      document.getElementById('boardLength').value = 250
+      document.getElementById('boardWidth').value = 200
+      document.getElementById('partsPerBoard').value = 100
+      document.getElementById('panels').value = 1
+      document.getElementById('machineType').value = 'NPM-D1/D2'
+      document.getElementById('headType').value = 'H16'
+      document.getElementById('headCount').value = 4
+      document.getElementById('prodMode').value = 'alternating'
+      document.getElementById('output').style.display = 'none'
+    })
+
+    document.querySelectorAll('input').forEach(i=>{
+      i.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') calc() })
+    })
+  </script>
+</body>
+</html>
