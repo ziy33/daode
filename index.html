@@ -1,12 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能制造软件开发能力与业务范围</title>
+<meta name="description" content="智慧工厂软件解决方案 - 从现场感知、即时监控到决策支援的全链路自研系统">
+<style>
+:root{--bg-primary:#0d1f2e;--bg-secondary:#1a3a4a;--bg-card:#162d3d;--accent-cyan:#00bcd4;--accent-green:#00e676;--text-primary:#fff;--text-secondary:#b0c4d4}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+h1{font-size:3rem}h2{font-size:2.25rem}h3{font-size:1.875rem}
+p{color:var(--text-secondary);margin-bottom:1rem}
+.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,31,46,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(100,150,180,0.2)}
+.nav-container{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;max-width:1400px;margin:0 auto}
+.nav-logo{font-size:1.25rem;font-weight:700;color:var(--accent-cyan);text-decoration:none}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.875rem;font-weight:500}
+.nav-links a:hover,.nav-links a.active{color:var(--accent-cyan)}
+.nav-toggle{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:0.5rem}
+.nav-toggle span{width:24px;height:2px;background:var(--text-primary)}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,var(--bg-primary),var(--bg-secondary));padding-top:80px}
+.hero-content{text-align:center;max-width:900px;position:relative;z-index:1}
+.hero-title{font-size:clamp(2.5rem,5vw,4rem);font-weight:700;margin-bottom:1.5rem;background:linear-gradient(135deg,var(--text-primary),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-subtitle{font-size:clamp(1.125rem,2vw,1.5rem);color:var(--text-secondary);margin-bottom:2.5rem}
+.hero-stats{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-value{display:block;font-size:2.25rem;font-weight:700;color:var(--accent-cyan)}
+.hero-stat-label{font-size:0.875rem;color:#6a8a9a}
+.section-header{text-align:center;margin-bottom:4rem}
+.section-title{font-size:2.25rem;margin-bottom:1rem;position:relative;display:inline-block}
+.section-title::after{content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,transparent,var(--accent-cyan),transparent)}
+.capabilities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem}
+.capability-card{background:var(--bg-card);border:1px solid rgba(100,150,180,0.2);border-radius:12px;padding:2rem;transition:transform 0.25s ease}
+.capability-card:hover{transform:translateY(-4px);border-color:rgba(0,188,212,0.4)}
+.capability-title{font-size:1.25rem;color:var(--accent-cyan);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem}
+.capability-title svg{width:24px;height:24px;flex-shrink:0}
+.capability-list{list-style:none}
+.capability-list li{position:relative;padding-left:1.5rem;margin-bottom:0.75rem;color:var(--text-secondary);font-size:0.875rem}
+.capability-list li::before{content:'\25B8';position:absolute;left:0;color:var(--accent-green)}
+.scope{background:var(--bg-secondary)}
+.scope-table-container{overflow-x:auto;margin-bottom:3rem;border-radius:12px;border:1px solid rgba(100,150,180,0.2)}
+.scope-table{width:100%;border-collapse:collapse;background:var(--bg-card)}
+.scope-table th,.scope-table td{padding:1.25rem 1.5rem;text-align:left;border-bottom:1px solid rgba(100,150,180,0.2)}
+.scope-table th{background:var(--bg-panel);color:var(--accent-cyan);font-weight:600}
+.scope-table td{color:var(--text-secondary)}
+.service-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:3rem}
+.service-mode{background:var(--bg-card);border:1px solid rgba(100,150,180,0.2);border-radius:8px;padding:1.5rem;display:flex;gap:1rem}
+.service-mode-icon{width:40px;height:40px;background:rgba(0,188,212,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.service-mode-icon svg{width:20px;height:20px;stroke:var(--accent-cyan)}
+.service-mode-text{color:var(--text-secondary);font-size:0.875rem;line-height:1.7}
+.cases{background:var(--bg-primary)}
+.cases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:2rem}
+.case-card{background:var(--bg-card);border:1px solid rgba(100,150,180,0.2);border-radius:12px;overflow:hidden}
+.case-image{position:relative;width:100%;padding-bottom:48.7%;background:var(--bg-secondary);cursor:pointer}
+.case-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.case-content{padding:1.5rem}
+.case-title{font-size:1.25rem;color:var(--accent-cyan);margin-bottom:0.75rem}
+.case-meta{font-size:0.875rem;color:#6a8a9a;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid rgba(100,150,180,0.2)}
+.case-result{background:rgba(0,230,118,0.08);border-left:3px solid var(--accent-green);padding:0.75rem 1rem;border-radius:0 8px 8px 0}
+.case-result p{font-size:0.875rem;color:var(--accent-green);margin:0}
+.delivery{background:var(--bg-secondary)}
+.delivery-list{max-width:900px;margin:0 auto;list-style:none}
+.delivery-item{display:flex;align-items:flex-start;gap:1.25rem;padding:1.5rem;background:var(--bg-card);border:1px solid rgba(100,150,180,0.2);border-radius:8px;margin-bottom:1rem}
+.delivery-icon{width:32px;height:32px;background:rgba(0,230,118,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.delivery-icon svg{width:18px;height:18px;stroke:var(--accent-green)}
+.delivery-text{color:var(--text-secondary);line-height:1.7}
+.delivery-text strong{color:var(--accent-green)}
+.footer{background:var(--bg-primary);padding:4rem 0 2.5rem;border-top:1px solid rgba(100,150,180,0.2)}
+.footer-content{text-align:center;max-width:800px;margin:0 auto}
+.footer-tagline{font-size:1.5rem;color:var(--text-primary);margin-bottom:1.5rem;font-weight:600}
+.footer-contact{font-size:1.125rem;color:#6a8a9a;margin-bottom:2.5rem}
+.footer-disclaimer{font-size:0.75rem;color:#6a8a9a;opacity:0.6;padding-top:1.5rem;border-top:1px solid rgba(100,150,180,0.2)}
+.lightbox{position:fixed;inset:0;background:rgba(13,31,46,0.95);z-index:2000;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.lightbox.active{display:flex}
+.lightbox-content{max-width:90%;max-height:90%;position:relative}
+.lightbox-img{max-width:100%;max-height:90vh;border-radius:8px;border:2px solid rgba(0,188,212,0.4)}
+.lightbox-close{position:absolute;top:-40px;right:0;background:none;border:none;cursor:pointer}
+.lightbox-close svg{width:32px;height:32px;stroke:var(--text-primary)}
+@media(max-width:768px){.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-primary);flex-direction:column;padding:1rem}.nav-links.active{display:flex}.nav-toggle{display:flex}.hero-stats{gap:1.5rem}.cases-grid,.service-modes{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
+<nav class="nav" id="nav"><div class="nav-container"><a href="#" class="nav-logo">智能制造解决方案</a><button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button><ul class="nav-links" id="navLinks"><li><a href="#about">关于团队</a></li><li><a href="#capabilities">开发能力</a></li><li><a href="#scope">业务范围</a></li><li><a href="#cases">解决方案案例</a></li><li><a href="#delivery">服务承诺</a></li><li><a href="#contact">联系我们</a></li></ul></div></nav>
+<section class="hero" id="hero"><div class="hero-content"><h1 class="hero-title">让数据说话，让产线思考</h1><p class="hero-subtitle">智慧工厂软件解决方案 - 从现场感知、即时监控到决策支援的全链路自研系统</p><div class="hero-stats"><div class="hero-stat"><span class="hero-stat-value">110+</span><span class="hero-stat-label">套在线系统</span></div><div class="hero-stat"><span class="hero-stat-value">跨国</span><span class="hero-stat-label">多国多厂区稳定运行</span></div><div class="hero-stat"><span class="hero-stat-value">6 大</span><span class="hero-stat-label">业务范围覆盖</span></div></div></div></section>
+<section class="about" id="about"><div class="container"><div class="section-header"><h2 class="section-title">深耕制造现场，多年实战沉淀</h2></div><div class="about-intro"><p>团队长期驻厂开发，深谙制造业现场流程（SMT、FATP、仓储、厂务、能源、人力）。全部系统自主研发、自主维护，从需求访谈、UI/UX、前后端开发、IoT 设备对接到跨区域部署一条龙完成。系统已在<strong>印尼、越南、中国、印度</strong>等多个制造厂区上线，涵盖中文、英文、印尼语等多语言环境。</p></div></div></section>
+<section class="capabilities" id="capabilities"><div class="container"><div class="section-header"><h2 class="section-title">开发能力</h2></div><div class="capabilities-grid">
+<div class="capability-card"><h3 class="capability-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>现场感知与 IoT 设备互联</h3><ul class="capability-list"><li>设备联网监控：SMT 产线设备（印刷、SPI、贴片、AOI、回流焊）实时在线/离线/异常状态可视化</li><li>制程参数采集与告警：炉温、置件头、Feeder、吸嘴等关键参数自动化监管</li><li>厂务环境感知：温湿度、CO2、空调主机（AHU/MAU）3D 模型即时监控</li></ul></div>
+<div class="capability-card"><h3 class="capability-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>即时看板与数据可视化</h3><ul class="capability-list"><li>生产、出货、库存、能源、AGV 厂内物流等 3D/2D 大屏看板</li><li>零延迟 Web 推送，现场 TV 依权限投屏，管理者随时掌握全局</li><li>自研可视化引擎：设备九宫格、产线状态、热力图、趋势图一页尽览</li></ul></div>
+<div class="capability-card"><h3 class="capability-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 5v14"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14"/></svg>管理系统与流程数字化</h3><ul class="capability-list"><li>生产管理：换线交接、备料、领料、异常呼叫、机台履历等全流程系统</li><li>厂务管理：报修、仓库、资产借用、监控调阅等一站式平台</li><li>人力/行政：工时、出勤、训练、表单签核、员工资料等管理工具</li><li>多语言界面：中文 / English / Bahasa Indonesia 自适应</li></ul></div>
+<div class="capability-card"><h3 class="capability-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>平台化与 AI 赋能</h3><ul class="capability-list"><li>统一入口平台：百余套系统单一入口整合，依部门/权限分发</li><li>内建 AI 助手：云端 LLM + 本地化轻量模型（8B）双轨，支援系统目录语义搜索、快速定位工具</li><li>开放集成：支援既有 ERP/SFIS/第三方平台对接，REST API 文件化</li></ul></div>
+</div></div></section>
+<section class="scope" id="scope"><div class="container"><div class="section-header"><h2 class="section-title">业务范围</h2></div><div class="scope-table-container"><table class="scope-table"><thead><tr><th>类别</th><th>涵盖领域</th></tr></thead><tbody><tr><td><strong>生产管理</strong></td><td>产线监控、换线交接、备料/领料、异常呼叫、机台保养、参数管理</td></tr><tr><td><strong>厂务管理</strong></td><td>报修、仓库、资产借用、CCTV 调阅、手机权限、表单签核</td></tr><tr><td><strong>看板/监控</strong></td><td>生产大屏、能源九宫格、SMT 九宫格、AGV 3D、5G 专网、出货看板</td></tr><tr><td><strong>人力/行政</strong></td><td>工时、出勤、训练、员工查询、助理辅助、日报异常登记</td></tr><tr><td><strong>公司系统</strong></td><td>能源管理、空调中央监控、智能制造执行平台、流程平台、API 文件</td></tr><tr><td><strong>工具</strong></td><td>内部 AI、网盘、档案格式转换</td></tr></tbody></table></div><div class="service-modes"><div class="service-mode"><div class="service-mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><h3 style="margin-bottom:.5rem;color:var(--text-primary);font-size:1rem">从 0 到 1 量身打造</h3><p class="service-mode-text">访谈需求 → 原型 → 开发 → 上线 → 培训，全流程交付</p></div></div><div class="service-mode"><div class="service-mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 1 2.13-9.36L1 10"/></svg></div><div><h3 style="margin-bottom:.5rem;color:var(--text-primary);font-size:1rem">既有系统优化/改造</h3><p class="service-mode-text">老旧表单系统翻新为 Web/看板化，低成本快速见效</p></div></div><div class="service-mode"><div class="service-mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="15"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/></svg></div><div><h3 style="margin-bottom:.5rem;color:var(--text-primary);font-size:1rem">IoT 与系统集成</h3><p class="service-mode-text">设备数据采集、跨系统串联、与甲方既有平台对接</p></div></div><div class="service-mode"><div class="service-mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V3h6"/><path d="M22 9V3h-6"/><path d="M2 15v6h6"/><path d="M22 15v6h-6"/><path d="M10 7h4"/><path d="M10 17h4"/></svg></div><div><h3 style="margin-bottom:.5rem;color:var(--text-primary);font-size:1rem">跨厂/跨区域部署</h3><p class="service-mode-text">多语言（中/英/印尼语）、多厂区平行上线与运维</p></div></div></div></div></section>
+<section class="cases" id="cases"><div class="container"><div class="section-header"><h2 class="section-title">解决方案案例</h2></div><div class="cases-grid">
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/prod_dashboard.jpg')"><img src="shots/prod_dashboard.jpg" alt="生产总览战情室"></div><div class="case-content"><h3 class="case-title">生产总览战情室</h3><p class="case-meta">适用：FATP/组装产线主管</p><p>出货总量、人力量能、良率趋势、重测率、数十条产线明细一屏尽览</p><div class="case-result"><p>成效：主管到现场即掌握产线健康度，决策零等待</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/energy.jpg')"><img src="shots/energy.jpg" alt="厂房环境 3D 监控"></div><div class="case-content"><h3 class="case-title">厂房环境 3D 监控</h3><p class="case-meta">适用：厂务/环安单位</p><p>AHU/MAU 主机 3D 楼层模型，温度、湿度、CO2 即时采样</p><div class="case-result"><p>成效：环境异常即时可视，节能调度有据可依</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/g5.jpg')"><img src="shots/g5.jpg" alt="5G 专网连线中枢"></div><div class="case-content"><h3 class="case-title">5G 专网连线中枢</h3><p class="case-meta">适用：需布建 5G/专网的智慧产线</p><p>基地台与终端连线监控、交递成功率、各楼层速率仪表</p><div class="case-result"><p>成效：5G 覆盖与品质 24h 掌握</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/smt_grid.jpg')"><img src="shots/smt_grid.jpg" alt="SMT 设备联网监控"></div><div class="case-content"><h3 class="case-title">SMT 设备联网监控</h3><p class="case-meta">适用：SMT 产线设备管理</p><p>36 条产线设备格状即时状态（在线/离线/异常）</p><div class="case-result"><p>成效：异常机台第一时间定位，减少停线等待</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/smt_param.jpg')"><img src="shots/smt_param.jpg" alt="SMT 制程参数监控"></div><div class="case-content"><h3 class="case-title">SMT 制程参数监控</h3><p class="case-meta">适用：制程/夹治具管理</p><p>全厂 36 条产线各机台参数健康度、区域良率</p><div class="case-result"><p>成效：参数日常巡检电子化，问题发现提前到发生当下</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/nozzle.jpg')"><img src="shots/nozzle.jpg" alt="关键耗材寿命管理"></div><div class="case-content"><h3 class="case-title">关键耗材寿命管理</h3><p class="case-meta">适用：SMT 耗材/设备保养</p><p>30+ 站点吸嘴使用时数分级管理（正常/警示/超期）</p><div class="case-result"><p>成效：耗材更换刚刚好，兼顾品质与成本</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/ship_tracking.jpg')"><img src="shots/ship_tracking.jpg" alt="出货进度战情看板"></div><div class="case-content"><h3 class="case-title">出货进度战情看板</h3><p class="case-meta">适用：物控/出货管理</p><p>日/周/月目标达成、出货数量与工单明细</p><div class="case-result"><p>成效：出货达成率与交期风险即时透明</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/wh70.jpg')"><img src="shots/wh70.jpg" alt="PCBA 智慧仓储看板"></div><div class="case-content"><h3 class="case-title">PCBA 智慧仓储看板</h3><p class="case-meta">适用：物料仓/PCBA 库房</p><p>SMT 上下料与整板库存即时数量、库位使用率</p><div class="case-result"><p>成效：库存水位一眼掌握，降低呆料与缺料风险</p></div></div></div>
+<div class="case-card"><div class="case-image" onclick="openLightbox('shots/agv3d.jpg')"><img src="shots/agv3d.jpg" alt="AGV 厂内物流 3D 监控"></div><div class="case-content"><h3 class="case-title">AGV 厂内物流 3D 监控</h3><p class="case-meta">适用：自动化物流导入厂区</p><p>厂区 3D 模型 + 物料运输路线与在途量，AGV 状态</p><div class="case-result"><p>成效：物流动线可视化调度，对接自动化搬运场景</p></div></div></div>
+</div></div></section>
+<section class="delivery" id="delivery"><div class="container"><div class="section-header"><h2 class="section-title">做到什么程度</h2></div><ul class="delivery-list">
+<li class="delivery-item"><div class="delivery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="delivery-text"><strong>110+ 套在线系统</strong>皆为实际运行中的真实系统，历经多年生产验证</div></li>
+<li class="delivery-item"><div class="delivery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="delivery-text"><strong>多国多厂区落地</strong>：印尼、越南、中国、印度（多语言界面）</div></li>
+<li class="delivery-item"><div class="delivery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="delivery-text"><strong>单一入口整合</strong>：百套系统一站式登入，AI 语义搜索秒级定位</div></li>
+<li class="delivery-item"><div class="delivery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="delivery-text"><strong>自研可控</strong>：无套版依赖，功能可随业务持续迭代</div></li>
+<li class="delivery-item"><div class="delivery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="delivery-text"><strong>运维服务</strong>：上线后持续监控、bug 修复、版本升级、驻厂支援</div></li>
+</ul></div></section>
+<footer class="footer" id="contact"><div class="container"><div class="footer-content"><p class="footer-tagline">从需求到上线，我们把制造现场的每一个瓶颈，变成一套可运作的系统。</p><p class="footer-contact">欢迎洽淡</p><p class="footer-disclaimer">本页面所展示系统界面仅供方案参考</p></div></div></footer>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)"><div class="lightbox-content"><button class="lightbox-close" onclick="closeLightbox(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><img class="lightbox-img" id="lightboxImg" src="" alt="放大预览"></div></div>
 <script>
-  window.location.href='Edule/index.html'
+const nav=document.getElementById('nav'),navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>50));
+navToggle.addEventListener('click',()=>navLinks.classList.toggle('active'));
+const lightbox=document.getElementById('lightbox'),lightboxImg=document.getElementById('lightboxImg');
+function openLightbox(src){lightboxImg.src=src;lightbox.classList.add('active');document.body.style.overflow='hidden';}
+function closeLightbox(e){if(e.target===lightbox||e.target.closest('.lightbox-close')){lightbox.classList.remove('active');document.body.style.overflow='';}}
+document.querySelectorAll('.capability-card,.case-card,.delivery-item,.service-mode').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(30px)';el.style.transition='opacity 0.6s ease,transform 0.6s ease';});
+const observer=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.style.opacity='1';x.target.style.transform='translateY(0);}});},{threshold:0.1});
+document.querySelectorAll('.capability-card,.case-card,.delivery-item,.service-mode').forEach(x=>observer.observe(x));
 </script>
 </body>
 </html>
